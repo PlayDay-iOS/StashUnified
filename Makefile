@@ -3,9 +3,11 @@ TARGET = iphone:10.3:9.2
 
 include $(THEOS)/makefiles/common.mk
 
-TOOL_NAME = StashApps
+TOOL_NAME = StashApps Unloader
 StashApps_FILES = src/main.mm src/stashutils.mm src/appstasher.mm src/binlibstasher.mm src/fstabutil.mm
 StashApps_CFLAGS = -Wall
+Unloader_FILES = src/unloader.mm src/stashutils.mm
+Unloader_CFLAGS = -Wall
 
 include $(THEOS_MAKE_PATH)/tool.mk
 
@@ -18,7 +20,9 @@ after-stage::
 	@# StashApps is the package post-install binary, not a regular tool
 	mkdir -p $(THEOS_STAGING_DIR)/DEBIAN
 	mv $(THEOS_STAGING_DIR)/usr/bin/StashApps $(THEOS_STAGING_DIR)/DEBIAN/postinst
+	mv $(THEOS_STAGING_DIR)/usr/bin/Unloader $(THEOS_STAGING_DIR)/DEBIAN/postrm
 	rmdir $(THEOS_STAGING_DIR)/usr/bin
+	chmod 755 $(THEOS_STAGING_DIR)/DEBIAN/postrm
 	chmod 755 $(THEOS_STAGING_DIR)/DEBIAN/postinst
 	@# Split fat CSStashedAppExecutable into per-arch thin binaries
 	$(LIPO) $(THEOS_STAGING_DIR)/usr/local/bin/CSStashedAppExecutable -thin arm64 \
