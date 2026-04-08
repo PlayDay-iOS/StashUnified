@@ -2,8 +2,8 @@
 declare -a cydia
 cydia=($CYDIA)
 
-echo "Stash933 Version 1.4.8"
-echo "Copyright 2016, CoolStar."
+echo "StashUnified Version 2.0.0"
+echo "Copyright 2016, CoolStar. Updated 2026, PlayDay."
 echo "stashing preference bundles..."
 /usr/libexec/cydia/move.sh /Library/PreferenceBundles #Preference Bundles
 /usr/libexec/cydia/move.sh /Library/PreferenceLoader #Preference Bundles

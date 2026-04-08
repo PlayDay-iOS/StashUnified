@@ -1,4 +1,5 @@
 #import "stashutils.h"
+#import "versions.h"
 
 #define AppsPath @"/Applications/"
 #define AppsStash @"/var/stash/appsstash"
@@ -47,6 +48,16 @@ bool deStashAppExecutable(NSString *executablePath, NSString *stashedExecutableP
 }
 
 bool stashAppExecutable(NSString *executablePath, NSString *stashedExecutablePath){
+	// Already stashed via symlink (iOS 10.3+ path)
+	if (isSymbolicLink(executablePath)){
+		if ([[NSFileManager defaultManager] fileExistsAtPath:executablePath])
+			return true;
+		// Dangling symlink from a previous failed run — remove and re-stash
+		printf("Warning: Dangling symlink at %s, re-stashing...\n", [executablePath UTF8String]);
+		deleteFile(executablePath, 1);
+	}
+
+	// Already stashed via loader (iOS 9.2-10.2.1 path)
 	NSString *binaryStrings = outputFromCommand(@"/usr/bin/strings", @[executablePath]);
 	if ([binaryStrings rangeOfString:@"=======*=======*=======CSSTASHEDAPPEXECUTABLESIGNATURE=======*=======*======="].location != NSNotFound){
 		return true;
@@ -63,8 +74,23 @@ bool stashAppExecutable(NSString *executablePath, NSString *stashedExecutablePat
 	if (!deleteFile(executablePath, 1))
 		return false;
 
-	if (!copyFile(AppExecutableLoader, executablePath))
+	// iOS 10.3+: AMFI patches allow direct symlinks, and the loader's
+	// execv() breaks FrontBoard's Mach port connections
+	if (IS_IOS_OR_NEWER(iOS_10_3)) {
+		if (!linkFile(stashedExecutablePath, executablePath)){
+			printf("Error: Symlink failed, restoring original executable...\n");
+			copyFile(stashedExecutablePath, executablePath);
+			return false;
+		}
+		return true;
+	}
+
+	// iOS 9.2-10.2.1: use loader stub (symlinked executables blocked)
+	if (!copyFile(AppExecutableLoader, executablePath)){
+		printf("Error: Loader copy failed, restoring original executable...\n");
+		copyFile(stashedExecutablePath, executablePath);
 		return false;
+	}
 
 	return true;
 }
@@ -288,8 +314,8 @@ bool isApp(NSString *appPath){
 }
 
 void stashAppMain(){
-	printf("Stash933 App Stasher Version 1.2.2\n");
-	printf("Copyright 2016, CoolStar.\n");
+	printf("StashUnified App Stasher Version 1.3.0\n");
+	printf("Copyright 2016, CoolStar. Updated 2026, PlayDay.\n");
 
 	printf("Please wait, scanning apps...\n");
 	NSFileManager *fileManager = [NSFileManager defaultManager];

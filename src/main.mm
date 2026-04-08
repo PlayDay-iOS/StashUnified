@@ -4,7 +4,9 @@
 #import <spawn.h>
 #import <dlfcn.h>
 #import <sys/stat.h>
+#import <sys/mount.h>
 #import <objc/runtime.h>
+#import "versions.h"
 
 void stashAppMain();
 void stashBinLibMain();
@@ -12,9 +14,19 @@ BOOL checkMount();
 void editFsTab();
 
 int main(int argc, char **argv, char **envp) {
-	// Check for supported iOS version (iOS 9.2-10.2.1)
-	if (kCFCoreFoundationVersionNumber < 1241.11 || kCFCoreFoundationVersionNumber > 1349.13) {
+	if (!IS_IOS_BETWEEN(iOS_9_2, iOS_MaxSupported)) {
 		printf("Error: Unsupported iOS version. Not continuing.\n");
+		return -1;
+	}
+
+	// Verify the filesystem is HFS+ — stashing is unsafe on APFS
+	struct statfs sfs;
+	if (statfs("/private/var", &sfs) != 0) {
+		printf("Error: Unable to stat /private/var. Not continuing.\n");
+		return -1;
+	}
+	if (strcmp(sfs.f_fstypename, "hfs") != 0) {
+		printf("Error: /private/var is %s, not HFS+. Not continuing.\n", sfs.f_fstypename);
 		return -1;
 	}
 

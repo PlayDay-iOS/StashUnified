@@ -1,10 +1,10 @@
-Package: org.coolstar.stash933
-Name: Stashing for iOS 9.2 - 10.2.1
-Depends: firmware (>= 9.2), firmware (<= 10.2.1), org.coolstar.cctools
-Version: 1.5.2
-Conflicts: com.tigisoftware.filza (<= 3.1.0-16), org.coolstar.stash935
+Package: dev.playday3008.stashunified
+Name: Stashing for iOS 9.2 - 10.3.4
+Depends: firmware (>= 9.2), firmware (<= 10.3.4), org.coolstar.cctools
+Conflicts: org.coolstar.stash933, org.coolstar.stash935
+Version: 2.0.0
 Architecture: iphoneos-arm
-Description: Stash 3rd party components to make more space for them!
-Maintainer: CoolStar <coolstarorganization@gmail.com>
-Author: CoolStar <coolstarorganization@gmail.com>
+Description: Stash 3rd party components to make more space for them! Unified version supporting all iOS 9.2 - 10.3.4.
+Maintainer: PlayDay <18056374+playday3008@users.noreply.github.com>
+Author: PlayDay <18056374+playday3008@users.noreply.github.com>
 Section: System

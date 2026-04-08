@@ -1,6 +1,7 @@
-# Stashing for iOS 9.2 - 10.2.1
+# Stash Unified
 
-Stash 3rd party components to make more space for them!
+Stash 3rd-party components to make more space for them.
+Unified version supporting iOS 9.2 -- 10.3.4.
 
 ## Building
 

@@ -131,8 +131,8 @@ void loadDatabase(){
 }
 
 void stashBinLibMain(){
-	printf("Stash933 CLI Tool/Library Stasher Version 1.0\n");
-	printf("Copyright 2016, CoolStar.\n");
+	printf("StashUnified CLI Tool/Library Stasher Version 1.1\n");
+	printf("Copyright 2016, CoolStar. Updated 2026, PlayDay.\n");
 
 	printf("Please wait, reading database...\n");
 

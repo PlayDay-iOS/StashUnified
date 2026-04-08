@@ -1,4 +1,5 @@
 #include "stashutils.h"
+#include "versions.h"
 
 BOOL checkMount(){
 	BOOL rebootNeeded = NO;
@@ -14,8 +15,8 @@ BOOL checkMount(){
 }
 
 void editFsTab(){
-	if (kCFCoreFoundationVersionNumber < 1348.00 || kCFCoreFoundationVersionNumber > 1349.13)
-		return; //Only edit FSTab on iOS 10.0 - 10.2.1
+	if (!IS_IOS_BETWEEN(iOS_10_0, iOS_MaxSupported))
+		return; //Only edit FSTab on iOS 10.0+ (up to 10.2.1 on arm64, 10.3.4 on armv7)
 
 	NSString *fstab = [NSString stringWithContentsOfFile:@"/etc/fstab" encoding:NSASCIIStringEncoding error:nil];
 	if (!fstab)
